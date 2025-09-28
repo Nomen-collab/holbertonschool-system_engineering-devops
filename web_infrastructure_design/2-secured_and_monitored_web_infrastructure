@@ -1,0 +1,65 @@
+# 2. Secured and monitored web infrastructure
+
+## Diagram Screenshot Link
+
+https://imgur.com/bcU3l3z
+
+---
+
+## Design and Explanation
+
+This infrastructure builds upon the distributed setup by adding **firewalls** for security, **HTTPS** for encrypted traffic, and **monitoring clients** for observability.
+
+### Components Added and Their Justification
+
+| New Element | Justification for Adding It |
+| :--- | :--- |
+| **3 Firewalls** | To restrict network traffic, blocking unauthorized access to the Load Balancer and the web/application servers, and controlling communication between components. |
+| **1 SSL Certificate** | To enable **HTTPS** (encrypted traffic) between the client and the infrastructure, protecting data confidentiality. |
+| **3 Monitoring Clients** | To collect metrics (CPU, memory, disk, network) and application logs from the Load Balancer and both servers, allowing for performance analysis and alerting. |
+
+### Infrastructure Specifics
+
+#### What are Firewalls used for?
+
+Firewalls act as a **network security system** that monitors and controls incoming and outgoing network traffic based on predetermined security rules. They are used to **filter unauthorized access** and prevent direct exposure of servers to the public internet, dramatically reducing the attack surface.
+
+#### Why is the traffic served over HTTPS?
+
+Traffic is served over **HTTPS** (Hypertext Transfer Protocol Secure) because it uses **TLS/SSL encryption**. This ensures that data exchanged between the client's browser and the server (including passwords, form data, etc.) remains **confidential and cannot be read or tampered with** by attackers during transmission.
+
+#### What is monitoring used for?
+
+Monitoring is used for **observability**. It involves collecting, processing, and analyzing system metrics, logs, and traces. It allows engineers to:
+1.  **Track performance:** Identify bottlenecks (high CPU, low memory) or slow response times.
+2.  **Set up alerts:** Be notified immediately when a failure or abnormal behavior occurs (e.g., server down, high error rate).
+3.  **Plan capacity:** Understand resource consumption to predict when scaling is needed.
+
+#### How the monitoring tool is collecting data
+
+The monitoring tool collects data through dedicated **monitoring clients (agents/data collectors)** installed on each server (e.g., Sumologic agent, Prometheus node exporter). These clients constantly collect local system metrics and application logs and securely transmit them over the network to a centralized monitoring server for storage and analysis.
+
+#### Monitoring Web Server QPS
+
+To monitor a web server's **QPS (Queries Per Second)**, you would typically:
+1.  **Configure the Web Server:** Enable a dedicated monitoring endpoint (e.g., Nginx stub status module).
+2.  **Configure the Monitoring Client:** Set the monitoring agent (e.g., Sumologic client) on the server to **scrape** data from this endpoint every few seconds.
+3.  **Calculate:** The monitoring service then processes this data to calculate the rate of requests per second and display it on a dashboard.
+
+---
+
+### Issues with this Infrastructure
+
+#### Why terminating SSL at the Load Balancer level is an issue
+
+Terminating SSL at the Load Balancer (LB) means the traffic between the **LB and the web servers** is sent **unencrypted (plain HTTP)**. This creates a **security risk** known as the **"internal vulnerability"**; an attacker who manages to breach the internal network could intercept sensitive data traveling between the LB and the backend servers.
+
+#### Why having only one MySQL server capable of accepting writes is an issue
+
+This refers to the **Primary/Replica (Master-Slave)** setup where the Primary node handles all writes. This setup still has a **SPOF (Single Point Of Failure)** for write operations. If the Primary node fails, the system cannot process any new user registrations, purchases, or data updates until a manual or automated **failover** occurs (promoting a Replica to Primary), leading to potential downtime or data loss during the transition.
+
+#### Why having servers with all the same components (database, web server and application server) might be a problem
+
+In this infrastructure, the database is now **separated** into a cluster, but the Web Server (Nginx) and Application Server are still bundled together on the same machines. This is a problem because:
+1.  **Resource Contention:** Web server processes (handling static files) can compete for resources (CPU/RAM) with the Application Server processes (handling heavy logic), reducing performance.
+2.  **Inflexibility in Scaling:** You cannot scale the Web Server tier independently from the Application Server tier. If only your web traffic increases (more static requests), you are forced to deploy and pay for an unnecessary Application Server instance as well. The best practice is to **separate the Web Server and Application Server** into their own distinct tiers.
