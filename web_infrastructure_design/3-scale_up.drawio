@@ -1,0 +1,129 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="28.2.5">
+  <diagram id="ScalableWebStack_ID" name="WebStack-3">
+    <mxGraphModel dx="1800" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="Client3" value="User Browser / Client" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="525" y="50" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Firewall1_3" value="&lt;b&gt;Firewall 1&lt;/b&gt;&lt;br&gt;(External / DMZ)" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=0;backgroundOutline=1;darkOpacity=0.05;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="525" y="150" width="150" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LoadBalancer3" value="&lt;b&gt;HAproxy Cluster (Active/Passive)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Eliminates LB SPOF&lt;/i&gt;" style="shape=rect;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#990000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="250" width="400" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="LB1" value="LB 1 (Active)" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b655;" vertex="1" parent="LoadBalancer3">
+          <mxGeometry x="10" y="10" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="LB2" value="LB 2 (Passive)" style="shape=process;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="LoadBalancer3">
+          <mxGeometry x="120" y="10" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="MonitorLB3" value="Monitor Client" style="shape=note;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="LoadBalancer3">
+          <mxGeometry x="340" y="10" width="50" height="40" as="geometry" />
+        </mxCell>
+
+
+        <mxCell id="FirewallTier2" value="&lt;b&gt;Firewall Tier 2&lt;/b&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=0;backgroundOutline=1;darkOpacity=0.05;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="250" y="380" width="300" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="WebTier" value="&lt;b&gt;WEB SERVER TIER&lt;/b&gt;" style="swimlane;startSize=20;fillColor=#d5e8d4;strokeColor=#82b366;rounded=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="150" y="460" width="450" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Web1" value="Nginx 1 + Codebase" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b655;" vertex="1" parent="WebTier">
+          <mxGeometry x="30" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="Web2" value="Nginx 2 + Codebase" style="shape=cylinder;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b655;" vertex="1" parent="WebTier">
+          <mxGeometry x="170" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="WebMonitor" value="Monitor Clients (QPS)" style="shape=note;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="WebTier">
+          <mxGeometry x="310" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="AppTier" value="&lt;b&gt;APPLICATION SERVER TIER&lt;/b&gt;" style="swimlane;startSize=20;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="650" y="460" width="450" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="App1_3" value="App Server 1" style="shape=box;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="AppTier">
+          <mxGeometry x="30" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="App2_3" value="App Server 2" style="shape=box;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="AppTier">
+          <mxGeometry x="170" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="AppMonitor" value="Monitor Clients (Logs)" style="shape=note;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="AppTier">
+          <mxGeometry x="310" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="FirewallTier3" value="&lt;b&gt;Firewall Tier 3&lt;/b&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=0;backgroundOutline=1;darkOpacity=0.05;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="600" y="650" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DBCluster3" value="&lt;b&gt;MySQL Cluster (3 Nodes)&lt;/b&gt;&lt;br&gt;&lt;i&gt;Automated Failover&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="600" y="720" width="500" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="DBPrimary3" value="Primary (Writes)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b655;" vertex="1" parent="DBCluster3">
+          <mxGeometry x="30" y="40" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="DBReplica3A" value="Replica A (Reads)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="DBCluster3">
+          <mxGeometry x="190" y="40" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="DBReplica3B" value="Replica B (Reads)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="DBCluster3">
+          <mxGeometry x="350" y="40" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="FlowA3" value="HTTPS Request" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#008000;fontColor=#008000;" edge="1" parent="1" source="Client3" target="Firewall1_3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="110" as="sourcePoint" />
+            <mxPoint x="600" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowB3" value="HTTPS" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Firewall1_3" target="LoadBalancer3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="210" as="sourcePoint" />
+            <mxPoint x="600" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowC3" value="HTTP (Unsecured Internal)" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#e51400;fontColor=#e51400;" edge="1" parent="1" source="LoadBalancer3" target="FirewallTier2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="310" as="sourcePoint" />
+            <mxPoint x="400" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowD3" value="Requests to Nginx" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="FirewallTier2" target="WebTier">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="420" as="sourcePoint" />
+            <mxPoint x="375" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowE3" value="Reverse Proxy to App Tier" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="WebTier" target="AppTier">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="535" as="sourcePoint" />
+            <mxPoint x="650" y="535" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowF3" value="DB Queries" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="AppTier" target="FirewallTier3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="875" y="610" as="sourcePoint" />
+            <mxPoint x="850" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowG3" value="Writes (Primary) / Reads (Replica)" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="FirewallTier3" target="DBCluster3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="850" y="690" as="sourcePoint" />
+            <mxPoint x="850" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,47 @@
+# 3. Scale up
+
+## Diagram Screenshot Link
+
+https://imgur.com/O7iF38Y
+
+***
+
+## Design and Explanation
+
+This infrastructure is a fully **scalable and resilient** design that solves the remaining SPOFs and performance issues identified in Task 2. Key additions are multiple Load Balancers, separation of application and web tiers, and a database cluster capable of automated failover.
+
+### Components Added and Their Justification
+
+| New Element | Justification for Adding It |
+| :--- | :--- |
+| **Second Load Balancer** | Eliminates the Load Balancer as a **SPOF (Single Point of Failure)**. The two LBs run in an **Active-Passive** configuration to ensure that if the primary LB fails, the secondary takes over instantly without downtime. |
+| **Web Server Tier (Dedicated)** | Separates the Web Servers (Nginx) from the Application Servers. Allows the web tier to be **scaled independently** to handle high volumes of static requests or reverse proxy requests without impacting the App Servers. |
+| **Application Server Tier (Dedicated)** | Separates the Application Servers from the Web Servers. Allows the app tier (which handles complex logic) to be **scaled independently** based on CPU/memory usage, maximizing resource efficiency. |
+| **Additional Server (Database Node)** | Added to the database cluster (making 3 nodes total) to create a robust cluster that enables **automated failover** capability, meaning the system can automatically promote a replica to be the new primary if the current primary fails. |
+
+### Application server vs web server
+
+* **Web Server (Nginx):** Primarily handles **HTTP requests**, serves static content (HTML, images, CSS), and acts as a **reverse proxy** to forward dynamic requests to the Application Server tier.
+* **Application Server (Gunicorn, uWSGI, etc.):** Executes the application's business logic (Python, PHP, Java code), processes user input, and communicates with the database to generate dynamic content.
+
+Separating them allows for optimized scaling: if web traffic spikes, you scale the cheap Web Server tier; if computation load spikes, you scale the expensive Application Server tier.
+
+### Specifics about this Infrastructure
+
+#### What distribution algorithm is your load balancer configured with and how it works
+
+The Load Balancers would use a **Least Connection** algorithm. This ensures that the Load Balancer directs new requests to the server that currently has the **fewest active connections**, leading to a better distribution of the actual workload compared to simple Round Robin.
+
+#### Is your Load Balancer enabling an Active-Active or Active-Passive setup?
+
+The Load Balancer setup is **Active-Passive**. One LB handles all traffic (Active), while the other remains ready (Passive). They are monitored by an external mechanism (like Keepalived) that initiates a **failover** (transferring the virtual IP) if the Active LB fails. This is done to eliminate the LB SPOF.
+
+#### How a database Primary-Replica cluster works
+
+The cluster now consists of at least **one Primary (Master) and two Replicas (Slaves)**. All **WRITE** operations (INSERT, UPDATE) go to the Primary, and the data is asynchronously copied to the Replicas. The application directs most **READ** operations (SELECT) to the Replicas to offload the Primary.
+
+#### What are the issues with this infrastructure?
+
+1.  **Complexity and Cost:** The system is highly complex, increasing the management overhead (configuration management, monitoring setup) and operational costs (more cloud resources).
+2.  **Lack of Distributed File Storage (SPOF):** The codebase and application files are still stored locally on the Web and App Servers. This means deploying new code requires updating multiple servers simultaneously. If deployment is not synchronized, it creates an **inconsistency SPOF** and potential downtime. A dedicated shared storage solution (like S3 or NAS) is needed.
+3.  **Replication Lag:** As noted previously, relying on Replicas for reads can lead to users temporarily seeing stale data due to the inherent time delay in data synchronization from the Primary.
