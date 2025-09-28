@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="28.2.5">
+  <diagram id="DistributedWebStack_ID" name="WebStack-1">
+    <mxGraphModel dx="1400" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="Client1" value="User Browser / Client" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="10" y="220" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DNS1" value="DNS (A Record)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="220" y="210" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LoadBalancer" value="&lt;b&gt;HAproxy&lt;/b&gt;&lt;br&gt;Load Balancer&lt;br&gt;&lt;i&gt;(SPOF)&lt;/i&gt;" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=0;backgroundOutline=1;darkOpacity=0.05;fontSize=11;fillColor=#e6d0de;strokeColor=#990000;" vertex="1" parent="1">
+          <mxGeometry x="450" y="200" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Server1" value="&lt;b&gt;Server 1&lt;/b&gt;&lt;br&gt;Nginx + App Server + Codebase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="Server2" value="&lt;b&gt;Server 2&lt;/b&gt;&lt;br&gt;Nginx + App Server + Codebase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="650" y="320" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DBCluster" value="&lt;b&gt;Database Cluster&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="620" y="550" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DBPrimary" value="&lt;b&gt;MySQL Primary (Master)&lt;/b&gt;&lt;br&gt;&lt;i&gt;-- WRITE SPOF --&lt;/i&gt;" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="DBCluster">
+          <mxGeometry x="10" y="30" width="90" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DBReplica" value="&lt;b&gt;MySQL Replica (Slave)&lt;/b&gt;&lt;br&gt;&lt;i&gt;-- READ Scale --&lt;/i&gt;" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="DBCluster">
+          <mxGeometry x="120" y="30" width="90" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="DBReplication" value="Replication (Async/Sync)" style="endArrow=classic;html=1;rounded=0;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="DBCluster" source="DBPrimary" target="DBReplica">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="100" y="75" as="sourcePoint" />
+            <mxPoint x="120" y="75" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowA" value="1. Request www.foobar.com" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="Client1" target="DNS1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="150" y="250" as="sourcePoint" />
+            <mxPoint x="220" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowB" value="2. IP Resolved (to LB)" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="DNS1" target="LoadBalancer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="250" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowC1" value="3. Request (Round Robin)" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="LoadBalancer" target="Server1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="250" as="sourcePoint" />
+            <mxPoint x="650" y="95" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="600" y="250" />
+              <mxPoint x="600" y="95" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowC2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="LoadBalancer" target="Server2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="250" as="sourcePoint" />
+            <mxPoint x="650" y="365" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="600" y="250" />
+              <mxPoint x="600" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowD1Write" value="4. WRITE Query" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#e51400;" edge="1" parent="1" source="Server1" target="DBPrimary">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="725" y="140" as="sourcePoint" />
+            <mxPoint x="665" y="550" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="725" y="470" />
+              <mxPoint x="705" y="470" />
+              <mxPoint x="705" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="FlowD2Write" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#e51400;" edge="1" parent="1" source="Server2" target="DBPrimary">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="725" y="410" as="sourcePoint" />
+            <mxPoint x="705" y="585" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="725" y="450" />
+              <mxPoint x="705" y="450" />
+              <mxPoint x="705" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowD1Read" value="5. READ Query" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="Server1" target="DBReplica">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="725" y="140" as="sourcePoint" />
+            <mxPoint x="795" y="585" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="765" y="470" />
+              <mxPoint x="795" y="470" />
+              <mxPoint x="795" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowD2Read" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="Server2" target="DBReplica">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="725" y="410" as="sourcePoint" />
+            <mxPoint x="795" y="585" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="765" y="450" />
+              <mxPoint x="795" y="450" />
+              <mxPoint x="795" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowE1" value="6. HTML Response" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;dashed=1;strokeColor=#008000;" edge="1" parent="1" source="Server1" target="Client1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="650" y="95" as="sourcePoint" />
+            <mxPoint x="150" y="250" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="95" />
+              <mxPoint x="450" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="FlowE2" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;dashed=1;strokeColor=#008000;" edge="1" parent="1" source="Server2" target="Client1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="650" y="365" as="sourcePoint" />
+            <mxPoint x="150" y="250" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="365" />
+              <mxPoint x="450" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="LabelHTTPS" value="&lt;b style=&quot;color: rgb(229, 20, 0);&quot;&gt;NO HTTPS (Security Issue)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="100" width="180" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="LabelFirewall" value="&lt;b style=&quot;color: rgb(229, 20, 0);&quot;&gt;NO FIREWALL (Security Issue)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="420" y="150" width="200" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="LabelMonitoring" value="&lt;b style=&quot;color: rgb(229, 20, 0);&quot;&gt;NO MONITORING (Operational Issue)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="50" width="220" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
