@@ -1,0 +1,69 @@
+# 0. Simple web stack
+
+## Infrastructure diagram
+
+![Simple web stack](https://i.imgur.com/YOUR_IMAGE_LINK.png)  
+*(Replace with your own uploaded diagram link from imgur or another image hosting service)*
+
+---
+
+## Explanation
+
+### Step by step
+1. A user opens a browser and types **www.foobar.com**.  
+2. The browser asks the **DNS** to resolve the domain name.  
+   - `www.foobar.com` points to **8.8.8.8** using an **A record**.  
+3. The request reaches the **server** at IP **8.8.8.8**.  
+4. On this server, we have:
+   - **Web server (Nginx):** receives the request, serves static files, and forwards dynamic requests to the app server.  
+   - **Application server:** runs the application logic (code execution).  
+   - **Application files:** the source code of the website.  
+   - **Database (MySQL):** stores persistent data for the application.  
+5. The application server interacts with the database if needed.  
+6. The generated response is sent back through Nginx → browser → displayed to the user.  
+
+---
+
+### Key concepts to know
+
+- **What is a server?**  
+  A server is a computer (physical or virtual) that provides services (such as hosting a website) to clients over a network.  
+
+- **Role of the domain name:**  
+  Translates human-readable names (like `foobar.com`) into IP addresses that machines understand.  
+
+- **Type of DNS record for `www`:**  
+  `www` is a **DNS A record** that points a domain name to an IPv4 address.  
+
+- **Role of the web server (Nginx):**  
+  Handles HTTP requests, serves static content, and forwards dynamic requests to the application server.  
+
+- **Role of the application server:**  
+  Runs the backend logic of the application (processes requests, executes code, returns results).  
+
+- **Role of the database (MySQL):**  
+  Stores and retrieves persistent structured data.  
+
+- **Communication between server and user computer:**  
+  Uses the **HTTP/HTTPS protocol** over the **TCP/IP network stack**.  
+
+---
+
+### Issues with this infrastructure
+- **SPOF (Single Point of Failure):**  
+  Only one server → if it goes down, the whole site is down.  
+
+- **Downtime during maintenance:**  
+  Restarting the server or redeploying code causes temporary unavailability.  
+
+- **Scaling problems:**  
+  A single server cannot handle high traffic loads.  
+
+---
+
+## Repository
+
+- **GitHub repository:** `holbertonschool-system_engineering-devops`  
+- **Directory:** `web_infrastructure_design`  
+- **File:** `0-simple_web_stack`
+
